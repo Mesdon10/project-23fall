@@ -1,11 +1,10 @@
 from flask import Flask, request, session, redirect, url_for, render_template
 from db.sql_conn import DataBase
 
-
 app = Flask(__name__)
 app.secret_key = "qwq"
 
-db = DataBase('./db/user.db')
+db = DataBase('C:\\Users\\86133\\Desktop\\project-23fall\\db\\user.db')
 
 
 def checkLogin():
@@ -110,6 +109,18 @@ def delete(id):
 def reset():
     session.clear()
     return redirect(url_for('login'))
+
+
+@app.route('/delete_all', methods=['GET', 'POST'])
+def deleteAll():
+    if not checkLogin():
+        return redirect(url_for('login'))
+
+    idlist = request.form.getlist('ids')
+    for stuId in idlist:
+        db.DeleteById('student_info', 'stu_id', stuId)
+
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
